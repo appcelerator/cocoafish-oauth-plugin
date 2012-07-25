@@ -178,6 +178,10 @@ module OAuth
       # Invalidate current token
       def invalidate
         if current_token
+          if !current_client_application.use_as
+            render :json=>{:success => 'false', :message => "This app isn't configured to work with Authorization Server!"}.to_json
+            return
+          end
           current_token.invalidate!
         else
           render :json=>{:success => 'false', :message => 'Invalid Token'}.to_json
